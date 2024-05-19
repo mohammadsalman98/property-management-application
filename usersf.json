@@ -1,0 +1,24 @@
+[
+  {
+    "email": "jane.doe@example.com",
+    "username": "janedoe",
+    "image": "https://example.com/path/to/jane_doe_image.jpg",
+    "bookmarks": [
+      "507f1f77bcf86cd799439011",
+      "507f191e810c19729de860ea"
+    ],
+    "createdAt": "2024-05-14T17:47:49.000Z",
+    "updatedAt": "2024-05-14T17:47:49.000Z"
+  },
+  {
+    "email": "john.smith@example.com",
+    "username": "johnsmith",
+    "image": "https://example.com/path/to/john_smith_image.jpg",
+    "bookmarks": [
+      "507f1f77bcf86cd799439012",
+      "507f191e810c19729de860eb"
+    ],
+    "createdAt": "2024-05-14T17:47:49.000Z",
+    "updatedAt": "2024-05-14T17:47:49.000Z"
+  }
+]

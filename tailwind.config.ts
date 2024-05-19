@@ -8,10 +8,14 @@ const config: Config = {
   ],
   theme: {
     extend: {
-      backgroundImage: {
-        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "gradient-conic":
-          "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+      fontFamily: {
+        sans: ["Poppins", "sans-serif"],
+      },
+      boxShadow: {
+        custom: "0 0 10px 100px #1882A8 inset",
+      },
+      gridTemplateColumns: {
+        "70/30": "70% 28%",
       },
     },
   },
