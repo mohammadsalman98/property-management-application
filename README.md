@@ -43,6 +43,4 @@ npm run dev
 
 Contributions are welcome as we build "Senatry Estates" together. Whether it's feature development, bug fixes, or documentation, your input is valuable.
 
-## License
 
-This project is licensed under the MIT License - see the LICENSE.md file for details.
