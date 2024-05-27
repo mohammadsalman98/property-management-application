@@ -1,4 +1,5 @@
 "use client";
+import { stringify } from "querystring";
 import React, { ChangeEvent, useState } from "react";
 type Location = {
   street: string;
@@ -63,22 +64,66 @@ const defaultFields: Fields = {
 export default function PropertyAddForm() {
   const [fields, setFields] = useState<Fields>(defaultFields);
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     if (name.includes(".")) {
-      const [outerKey, innerKey] = name.split(".") as [string, string];
-
+      const [outerKey, innerKey] = name.split(".");
+      setFields((prevFields) => {
+        const outerFieldValue = prevFields[outerKey as keyof Fields];
+        if (typeof outerFieldValue === "object" && outerFieldValue !== null) {
+          return {
+            ...prevFields,
+            [outerKey]: {
+              ...(outerFieldValue as any),
+              [innerKey]: value,
+            },
+          };
+        }
+        return prevFields;
+      });
+    } else {
       setFields((prevFields) => ({
         ...prevFields,
-        [outerKey]: {
-          ...prevFields[outerKey],
-          [innerKey]: value,
-        },
+        [name]: value,
       }));
     }
   };
-  const handleAmenitiesChange = () => {};
-  const handleImageChange = () => {};
+  const handleAmenitiesChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { value, checked } = e.target;
+
+    const updatedAmenities = [...fields.amenities];
+
+    if (checked) {
+      updatedAmenities.push(value);
+    } else {
+      const index = updatedAmenities.indexOf(value);
+      if (index !== -1) {
+        updatedAmenities.splice(index, 1);
+      }
+    }
+
+    // Update the state with the updated array of amenities
+    setFields((prevFields) => ({
+      ...prevFields,
+      amenities: updatedAmenities,
+    }));
+  };
+  const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { files } = e.target;
+    if (files) {
+      const updateImages = [...fields.images];
+
+      Array.from(files).forEach((file) => {
+        updateImages.push(URL.createObjectURL(file));
+      });
+      setFields((prevFields) => ({
+        ...prevFields,
+        images: updateImages,
+      }));
+    }
+  };
   return (
     <form action="/api/properties" method="POST" encType="multipart/form-data">
       <h2 className="text-3xl text-center font-semibold mb-6">Add Property</h2>
