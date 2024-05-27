@@ -24,7 +24,9 @@ export const POST = async (request: Request) => {
     const amenities = formData.getAll("amenities");
     const images: FormDataEntryValue[] = formData
       .getAll("images")
-      .filter((image) => image instanceof File && image.name !== "");
+      .filter(
+        (image): image is File => image instanceof File && image.name !== " "
+      );
     console.log(images);
     return new Response(JSON.stringify({ message: "Success" }), {
       status: 201,
