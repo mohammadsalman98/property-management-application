@@ -22,12 +22,13 @@ export const POST = async (request: Request) => {
     const formData = await request.formData();
     console.log(formData);
     const amenities = formData.getAll("amenities");
-    const images: FormDataEntryValue[] = formData
+    const images = formData
       .getAll("images")
       .filter(
-        (image): image is File => image instanceof File && image.name !== " "
+        (file): file is File => file instanceof File && file.name.trim() !== ""
       );
     console.log(images);
+
     return new Response(JSON.stringify({ message: "Success" }), {
       status: 201,
     });
