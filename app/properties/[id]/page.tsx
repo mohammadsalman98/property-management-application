@@ -19,6 +19,7 @@ import {
   FaArrowLeft,
 } from "react-icons/fa";
 import Link from "next/link";
+import PropertyImages from "@/components/PropertyImages";
 
 export default function page() {
   const { id }: { id: string } = useParams();
@@ -243,6 +244,7 @@ export default function page() {
                 </div>
               </div>
             </section>
+            <PropertyImages images={property.images} />
           </>
         )
       )}

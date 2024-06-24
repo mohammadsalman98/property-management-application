@@ -22,12 +22,13 @@ export default function PropertyCard({ property }: PropertyCardProps) {
   return (
     <div className="rounded-xl shadow-md relative">
       <Image
-        src={`/images/properties/${property.images[1]}`}
+        src={property.images[0]}
         alt=""
         width="0"
         height="0"
         sizes="100vw"
         className="w-full max-h-56 rounded-t-xl  "
+        priority={true}
       />
       <div className="p-4">
         <div className="text-left md:text-center lg:text-left mb-6">

@@ -1,8 +1,12 @@
-// import connectDB from "@/config/database";
-
 import connectDB from "@/config/database";
 import Property from "@/models/Property";
-import { request } from "http";
+import getSessionUser from "@/utils/getSessionUser";
+import cloudinary from "@/config/cloudinary";
+//import types
+import { type Fields } from "@/types/types";
+//import utility functions
+
+import { getStringValue } from "@/utils/getStringValue";
 
 export const GET = async (request: Request): Promise<Response> => {
   try {
@@ -19,19 +23,125 @@ export const GET = async (request: Request): Promise<Response> => {
 
 export const POST = async (request: Request) => {
   try {
+    await connectDB();
+    const sessionUser = await getSessionUser();
+
+    if (!sessionUser || !sessionUser.userId) {
+      return new Response("User ID is required", { status: 401 });
+    }
+
+    const { userId } = sessionUser;
+
     const formData = await request.formData();
-    console.log(formData);
-    const amenities = formData.getAll("amenities");
+    // console.log(formData);
+    // const amenities = formData.getAll("amenities");
+
+    const amenitiesValues = formData.getAll("amenities");
+    const amenities: string[] = amenitiesValues.map((entry) => {
+      if (typeof entry === "string") {
+        return entry; // Value is already a string
+      }
+      if (entry instanceof File) {
+        return entry.name; // Extract file name from File object
+      }
+      return ""; // Fallback: return an empty string
+    });
     const images = formData
       .getAll("images")
       .filter(
         (file): file is File => file instanceof File && file.name.trim() !== ""
       );
-    console.log(images);
+    // Create the propertyData object with embedded seller_info
+    // const propertyData: Fields = {
+    //   type: formData.get("type")!,
+    //   name: formData.get("name"),
+    //   description: formData.get("description"),
+    //   location: {
+    //     street: formData.get("location.street"),
+    //     city: formData.get("location.city"),
+    //     state: formData.get("location.state"),
+    //     zipcode: formData.get("location.zipcode"),
+    //   },
+    //   beds: formData.get("beds"),
+    //   baths: formData.get("baths"),
+    //   square_feet: formData.get("square_feet"),
+    //   amenities,
+    //   rates: {
+    //     weekly: formData.get("rates.weekly"),
+    //     monthly: formData.get("rates.monthly"),
+    //     nightly: formData.get("rates.nightly"),
+    //   },
+    //   seller_info: {
+    //     name: formData.get("seller_info.name"),
+    //     email: formData.get("seller_info.email"),
+    //     phone: formData.get("seller_info.phone"),
+    //   },
+    //   owner: userId,
+    // };
+    const propertyData: Fields = {
+      type: getStringValue(formData.get("type")),
+      name: getStringValue(formData.get("name")),
+      description: getStringValue(formData.get("description")),
+      location: {
+        street: getStringValue(formData.get("location.street")),
+        city: getStringValue(formData.get("location.city")),
+        state: getStringValue(formData.get("location.state")),
+        zipcode: getStringValue(formData.get("location.zipcode")),
+      },
+      beds: getStringValue(formData.get("beds")),
+      baths: getStringValue(formData.get("baths")),
+      square_feet: getStringValue(formData.get("square_feet")),
+      amenities,
+      rates: {
+        weekly: getStringValue(formData.get("rates.weekly")),
+        monthly: getStringValue(formData.get("rates.monthly")),
+        nightly: getStringValue(formData.get("rates.nightly")),
+      },
+      seller_info: {
+        name: getStringValue(formData.get("seller_info.name")),
+        email: getStringValue(formData.get("seller_info.email")),
+        phone: getStringValue(formData.get("seller_info.phone")),
+      },
+      images: [],
+      owner: userId,
+    };
+    const imageUploadPromises = [];
 
-    return new Response(JSON.stringify({ message: "Success" }), {
-      status: 201,
-    });
+    for (const image of images) {
+      // Assuming image is a File object, extract the file data
+      const imageBuffer = await image.arrayBuffer();
+      const imageArray = Array.from(new Uint8Array(imageBuffer));
+      const imageData = Buffer.from(imageArray);
+
+      // Convert the image data to base64
+      const imageBase64 = imageData.toString("base64");
+
+      // Upload the image data as a base64 string to Cloudinary
+      const result = await cloudinary.uploader.upload(
+        `data:image/png;base64,${imageBase64}`,
+        {
+          folder: "propertypulsedev",
+        }
+      );
+
+      imageUploadPromises.push(result.secure_url);
+    }
+
+    // Wait for all image uploads to complete
+    const uploadedImages = await Promise.all(imageUploadPromises);
+
+    // Add the uploaded images to the propertyData object
+    propertyData.images = uploadedImages;
+    const newProperty = new Property(propertyData);
+    await newProperty.save();
+    console.log(propertyData);
+
+    // return new Response(JSON.stringify({ message: "Success" }), {
+    //   status: 201,
+    // });
+    return Response.redirect(
+      `${process.env.NEXTAUTH_URL}/properties/${newProperty._id}`
+    );
   } catch (error) {
     console.log(error);
     return new Response("Failed to add property", { status: 500 });

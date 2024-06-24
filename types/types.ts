@@ -1,4 +1,5 @@
 export type PropertyData = {
+  // بدو تزبيطة
   _id: string;
   owner: string;
   name: string;
@@ -41,4 +42,37 @@ export type ProfileProps = {
 export type seassionProps = {
   id: string;
   email: string;
+};
+export type Location = {
+  street: string;
+  city: string;
+  state: string;
+  zipcode: string;
+};
+
+export type Rates = {
+  weekly: string;
+  monthly: string;
+  nightly: string;
+};
+
+export type SellerInfo = {
+  name: string;
+  email: string;
+  phone: string;
+};
+
+export type Fields = {
+  type: string;
+  name: string;
+  description: string;
+  location: Location;
+  beds: string;
+  baths: string;
+  square_feet: string;
+  amenities: string[];
+  rates: Rates;
+  seller_info: SellerInfo;
+  images: string[];
+  owner?: string;
 };

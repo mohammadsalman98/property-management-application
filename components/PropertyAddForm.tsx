@@ -1,39 +1,6 @@
 "use client";
-import { stringify } from "querystring";
 import React, { ChangeEvent, useState } from "react";
-type Location = {
-  street: string;
-  city: string;
-  state: string;
-  zipcode: string;
-};
-
-type Rates = {
-  weekly: string;
-  monthly: string;
-  nightly: string;
-};
-
-type SellerInfo = {
-  name: string;
-  email: string;
-  phone: string;
-};
-
-type Fields = {
-  type: string;
-  name: string;
-  description: string;
-  location: Location;
-  beds: string;
-  baths: string;
-  square_feet: string;
-  amenities: string[];
-  rates: Rates;
-  seller_info: SellerInfo;
-  images: string[];
-};
-
+import { type Fields } from "@/types/types";
 const defaultFields: Fields = {
   type: "Apartment",
   name: "Test Property",
@@ -98,6 +65,7 @@ export default function PropertyAddForm() {
     if (checked) {
       updatedAmenities.push(value);
     } else {
+      // to handle recheck situation
       const index = updatedAmenities.indexOf(value);
       if (index !== -1) {
         updatedAmenities.splice(index, 1);
@@ -136,8 +104,8 @@ export default function PropertyAddForm() {
           Property Type
         </label>
         <select
-          id="property_type"
-          name="property_type"
+          id="type"
+          name="type"
           className="border rounded w-full py-2 px-3"
           required
           value={fields.type}
