@@ -13,7 +13,7 @@ const ProfilePage = () => {
   const profileImage = session?.user.image;
   const profileEmail = session?.user.email;
   const [properties, setProperties] = useState<PropertyData[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
     async function fetchUserProperties(userId: string) {
       if (!userId) {
@@ -35,7 +35,7 @@ const ProfilePage = () => {
     if (session?.user?.id) {
       fetchUserProperties(session.user.id);
     }
-  }, []);
+  }, [session]);
   return (
     <section className="bg-blue-50">
       <div className="container m-auto py-24">
