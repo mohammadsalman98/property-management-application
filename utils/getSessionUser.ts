@@ -6,8 +6,8 @@ export default async function getSessionUser() {
     const session = await getServerSession(authOptions);
     if (!session || !session.user) return null;
     return {
-      user: session.user,
-      userId: session.user.id,
+      user: session.user as String,
+      userId: session.user.id as String,
     };
   } catch (error) {
     console.error(error);

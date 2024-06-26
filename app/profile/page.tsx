@@ -14,6 +14,31 @@ const ProfilePage = () => {
   const profileEmail = session?.user.email;
   const [properties, setProperties] = useState<PropertyData[]>([]);
   const [loading, setLoading] = useState(true);
+
+  async function handleDeleteProperty(properyId: string) {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this property?"
+    );
+    if (!confirmed) {
+      return;
+    }
+    try {
+      const res = await fetch(`/api/properties/${properyId}`, {
+        method: `DELETE`,
+      });
+      if (res.status === 200) {
+        const updateProperties = properties.filter(
+          (property) => property._id !== properyId
+        );
+        setProperties(updateProperties);
+      } else {
+        console.log("failed to delete the property");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   useEffect(() => {
     async function fetchUserProperties(userId: string) {
       if (!userId) {
@@ -100,6 +125,7 @@ const ProfilePage = () => {
                       <button
                         className="bg-red-500 text-white px-3 py-2 rounded-md hover:bg-red-600"
                         type="button"
+                        onClick={() => handleDeleteProperty(property._id)}
                       >
                         Delete
                       </button>
