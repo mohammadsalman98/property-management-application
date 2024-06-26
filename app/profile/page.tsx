@@ -6,6 +6,8 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { PropertyData } from "@/types/types";
 import Spinner from "@/components/Spinner";
+import { toast } from "react-toastify";
+import Swal from "sweetalert2";
 
 const ProfilePage = () => {
   const { data: session } = useSession();
@@ -16,12 +18,23 @@ const ProfilePage = () => {
   const [loading, setLoading] = useState(true);
 
   async function handleDeleteProperty(properyId: string) {
-    const confirmed = window.confirm(
-      "Are you sure you want to delete this property?"
-    );
-    if (!confirmed) {
-      return;
-    }
+    // const confirmed = window.confirm(
+    //   "Are you sure you want to delete this property?"
+    // );
+    // if (!confirmed) {
+    //   return;
+    // }
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "You will not be able to recover this item!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#DD6B55",
+      confirmButtonText: "Yes, delete it!",
+      cancelButtonText: "Cancel",
+    });
+
+    if (!result.isConfirmed) return;
     try {
       const res = await fetch(`/api/properties/${properyId}`, {
         method: `DELETE`,
@@ -31,8 +44,9 @@ const ProfilePage = () => {
           (property) => property._id !== properyId
         );
         setProperties(updateProperties);
+        toast.success("Property deleted successfully");
       } else {
-        console.log("failed to delete the property");
+        toast.error("Failed to delete property");
       }
     } catch (error) {
       console.error(error);
