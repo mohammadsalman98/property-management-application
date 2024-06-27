@@ -1,5 +1,5 @@
 export type PropertyData = {
-  // بدو تزبيطة
+  // need recheck
   _id: string;
   owner: string;
   name: string;
