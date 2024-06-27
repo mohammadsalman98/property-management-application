@@ -216,6 +216,7 @@ export default function Navbar() {
                       className="block px-4 py-2 text-sm text-gray-700"
                       role="menuitem"
                       id="user-menu-item-0"
+                      onClick={() => setIsprofileMenuOpen((prev) => !prev)}
                     >
                       Your Profile
                     </Link>
@@ -224,6 +225,7 @@ export default function Navbar() {
                       className="block px-4 py-2 text-sm text-gray-700"
                       role="menuitem"
                       id="user-menu-item-2"
+                      onClick={() => setIsprofileMenuOpen((prev) => !prev)}
                     >
                       Saved Properties
                     </Link>
@@ -231,6 +233,7 @@ export default function Navbar() {
                       onClick={() => {
                         setIsMobileMenuOpen(false);
                         signOut();
+                        setIsprofileMenuOpen((prev) => !prev);
                       }}
                       className="block px-4 py-2 text-sm text-gray-700"
                       role="menuitem"

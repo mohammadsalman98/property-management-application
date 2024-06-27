@@ -103,7 +103,7 @@ export const POST = async (request: Request) => {
         phone: getStringValue(formData.get("seller_info.phone")),
       },
       images: [],
-      owner: userId,
+      owner: userId as string,
     };
     const imageUploadPromises = [];
 

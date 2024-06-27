@@ -11,9 +11,9 @@ export type PropertyData = {
     state: string;
     zipcode: string;
   };
-  beds: number;
-  baths: number;
-  square_feet: number;
+  beds: string; //number
+  baths: string; //number
+  square_feet: string; ////number
   amenities: string[];
   rates: {
     weekly: string;
@@ -73,6 +73,6 @@ export type Fields = {
   amenities: string[];
   rates: Rates;
   seller_info: SellerInfo;
-  images: string[];
+  images?: string[];
   owner?: string;
 };
